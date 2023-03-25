@@ -98,11 +98,12 @@ function floor(num) {
     return Math.floor(num*100)/100;
 }
 
-document.getElementById("vibrateBtn").addEventListener("click", vibrate);
-function vibrate() {
+document.getElementById("vibrateBtn").addEventListener("click", () => {vibrate();});
+function vibrate(ms = 1000) {
+    console.log(ms);
     gp.vibrationActuator.playEffect("dual-rumble", {
         startDelay: 0,
-        duration: 1000,
+        duration: ms,
         weakMagnitude: 0.2,
         strongMagnitude: 0.2
     });
