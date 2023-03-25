@@ -49,8 +49,8 @@ function detect() {
         }
     }
     for (let i = 0; i < gamepad.axes.length/2; i++) {
-        document.getElementById("axis_gradient").innerHTML += `axis: ${gamepad.axes[(i*2)]}<br>`;
-        document.getElementById("axis_gradient").innerHTML += `axis: ${gamepad.axes[(i*2)+1]}<br>`;
+        document.getElementById("axis_gradient").innerHTML += `axis: ${floor(gamepad.axes[(i*2)])}<br>`;
+        document.getElementById("axis_gradient").innerHTML += `axis: ${floor(gamepad.axes[(i*2)+1])}<br>`;
 
         let canvas = document.getElementById(`axis_${i}`);
         drawBackground(canvas);
@@ -67,6 +67,9 @@ function detect() {
     if(animate) requestAnimationFrame(detect);
 }
 
+function floor(num) {
+    return Math.floor(num*100)/100;
+}
 
 function drawAxis(canvas, x, y, size = 8) {
     let ctx = canvas.getContext('2d');
