@@ -1,6 +1,37 @@
 let gp;
-window.addEventListener("gamepadconnected", function(e) {
-    gp = navigator.getGamepads()[e.gamepad.index];
+window.addEventListener("gamepadconnected", e => {
+    load(navigator.getGamepads()[e.gamepad.index]);
+})
+
+document.getElementById("connectBtn").addEventListener("click", connectAnother);
+
+function connectAnother() {
+    if(countGamepads() > 1) {
+        let gamepads = navigator.getGamepads();
+        let currentIndex = gp.index;
+        for(let i = 1; i < gamepads.length; i++) {
+            let nextIndex = (currentIndex + i) % gamepads.length;
+            if(gamepads[nextIndex]) {
+                load(gamepads[nextIndex]);
+                break;
+            }
+        }
+    }
+}
+
+function countGamepads() {
+    let gamepads = navigator.getGamepads();
+    let count = 0;
+    for (let i = 0; i < gamepads.length; i++) {
+        if (gamepads[i]) {
+            count++;
+        }
+    }
+    return count;
+}
+
+function load(gamepad) {
+    gp = gamepad;
     console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
     gp.index, gp.id,
     gp.buttons.length, gp.axes.length);
@@ -9,6 +40,7 @@ window.addEventListener("gamepadconnected", function(e) {
     document.getElementById("button_count").innerHTML = `Buttons: ${gp.buttons.length}`;
     document.getElementById("axis_count").innerHTML = `Axis: ${gp.axes.length}`;
 
+    document.getElementById("axes").innerHTML = "";
     for(let i = 0;i < gp.axes.length/2;i++) {
         let canvas = document.createElement("canvas");
         canvas.width = 150;
@@ -17,10 +49,9 @@ window.addEventListener("gamepadconnected", function(e) {
         document.getElementById("axes").appendChild(canvas);
     }
     start();
-});
+}
 
 let animate = false;
-
 function start() {
     animate = true;
     detect();
