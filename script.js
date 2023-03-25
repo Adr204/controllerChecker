@@ -1,3 +1,5 @@
+import { drawAxis, drawBackground, lineToPad, drawArrow, fillArrow, drawBtn, fillBtn } from "./virtual.js";
+
 let gp;
 window.addEventListener("gamepadconnected", e => {
     load(navigator.getGamepads()[e.gamepad.index]);
@@ -38,6 +40,22 @@ function load(gamepad) {
     document.getElementById("button_count").innerHTML = `Buttons: ${gp.buttons.length}`;
     document.getElementById("axis_count").innerHTML = `Axis: ${gp.axes.length}`;
 
+    document.getElementById("buttons").innerHTML = "";
+    (() => {
+        let canvas = document.createElement("canvas");
+        canvas.width = 150;
+        canvas.height = 150;
+        canvas.id = "arrowBtn";
+        document.getElementById("buttons").appendChild(canvas);
+    })();
+    (() => {
+        let canvas = document.createElement("canvas");
+        canvas.width = 150;
+        canvas.height = 150;
+        canvas.id = "abxyBtn";
+        document.getElementById("buttons").appendChild(canvas);
+    })();
+
     document.getElementById("axes").innerHTML = "";
     for(let i = 0;i < gp.axes.length/2;i++) {
         let canvas = document.createElement("canvas");
@@ -59,11 +77,7 @@ function stop() {
     animate = false;
 }
 function toggle() {
-    if(animate) {
-        stop();
-    } else {
-        start();
-    }
+    animate ? stop() : start();
 }
 function detect() {
     let gamepad = navigator.getGamepads()[gp.index];
@@ -84,6 +98,40 @@ function detect() {
         drawAxis(canvas, gamepad.axes[(i*2)], gamepad.axes[(i*2)+1]);
     }
 
+    (() => {
+        let canvas = document.getElementById("arrowBtn");
+        let arrow = {
+            up: false,
+            down: false,
+            left: false,
+            right: false
+        };
+
+        if(gamepad.buttons[12].pressed) arrow.up = true;
+        if(gamepad.buttons[13].pressed) arrow.down = true;
+        if(gamepad.buttons[14].pressed) arrow.left = true;
+        if(gamepad.buttons[15].pressed) arrow.right = true;
+        drawArrow(canvas);
+        fillArrow(canvas, arrow);
+    })();
+
+    (() => {
+        let canvas = document.getElementById("abxyBtn");
+        let abxy = {
+            a: false,
+            b: false,
+            x: false,
+            y: false
+        }
+
+        if(gamepad.buttons[1].pressed) abxy.a = true;
+        if(gamepad.buttons[0].pressed) abxy.b = true;
+        if(gamepad.buttons[3].pressed) abxy.x = true;
+        if(gamepad.buttons[2].pressed) abxy.y = true;
+        drawBtn(canvas);
+        fillBtn(canvas, abxy);
+    })();
+
     if(document.getElementById("button_press").innerHTML == '') {
         document.getElementById("button_press").innerHTML = 'please any button press...';
     }
@@ -100,38 +148,10 @@ function floor(num) {
 
 document.getElementById("vibrateBtn").addEventListener("click", () => {vibrate();});
 function vibrate(ms = 1000) {
-    console.log(ms);
     gp.vibrationActuator.playEffect("dual-rumble", {
         startDelay: 0,
         duration: ms,
         weakMagnitude: 0.2,
         strongMagnitude: 0.2
     });
-}
-
-function drawAxis(canvas, x, y, size = 8) {
-    let ctx = canvas.getContext('2d');
-    let width = canvas.width*0.8;
-    let height = canvas.height*0.8;
-    let pad = canvas.width*0.1;
-
-    ctx.fillRect((x+1)*width/2 - size + pad, (y+1)*height/2 - size + pad, size*2, size*2);
-    // console.log((x+1)*width/2 - size, (y+1)*height/2 - size, size, size)
-}
-
-function drawBackground(canvas) {
-    let ctx = canvas.getContext('2d');
-    let width = canvas.width*0.8;
-    let height = canvas.height*0.8;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.beginPath();
-    ctx.moveTo(0, canvas.height/2);
-    ctx.lineTo(canvas.width, canvas.height/2);
-    ctx.closePath();
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(canvas.width/2, 0);
-    ctx.lineTo(canvas.width/2, canvas.height);
-    ctx.closePath();
-    ctx.stroke();
 }
