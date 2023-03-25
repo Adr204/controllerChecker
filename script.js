@@ -4,7 +4,6 @@ window.addEventListener("gamepadconnected", e => {
 })
 
 document.getElementById("connectBtn").addEventListener("click", connectAnother);
-
 function connectAnother() {
     if(countGamepads() > 1) {
         let gamepads = navigator.getGamepads();
@@ -18,7 +17,6 @@ function connectAnother() {
         }
     }
 }
-
 function countGamepads() {
     let gamepads = navigator.getGamepads();
     let count = 0;
@@ -52,6 +50,7 @@ function load(gamepad) {
 }
 
 let animate = false;
+document.getElementById("detectBtn").addEventListener("click", toggle);
 function start() {
     animate = true;
     detect();
@@ -59,7 +58,6 @@ function start() {
 function stop() {
     animate = false;
 }
-
 function toggle() {
     if(animate) {
         stop();
@@ -67,8 +65,6 @@ function toggle() {
         start();
     }
 }
-document.getElementById("detectBtn").addEventListener("click", toggle);
-
 function detect() {
     let gamepad = navigator.getGamepads()[gp.index];
     document.getElementById("button_press").innerHTML = '';
@@ -100,6 +96,16 @@ function detect() {
 
 function floor(num) {
     return Math.floor(num*100)/100;
+}
+
+document.getElementById("vibrateBtn").addEventListener("click", vibrate);
+function vibrate() {
+    gp.vibrationActuator.playEffect("dual-rumble", {
+        startDelay: 0,
+        duration: 1000,
+        weakMagnitude: 0.2,
+        strongMagnitude: 0.2
+    });
 }
 
 function drawAxis(canvas, x, y, size = 8) {
