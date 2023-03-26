@@ -1,13 +1,15 @@
 export { drawAxis, drawBackground, lineToPad, drawArrow, fillArrow, drawBtn, fillBtn };
 
-function drawAxis(canvas, x, y, size = 8) {
+function drawAxis(canvas, x, y, {size = 8, color = '#000000'}) {
     let ctx = canvas.getContext('2d');
     let width = canvas.width*0.8;
     let height = canvas.height*0.8;
     let pad = canvas.width*0.1;
 
+    let style = ctx.fillStyle;
+    ctx.fillStyle = color;
     ctx.fillRect((x+1)*width/2 - size + pad, (y+1)*height/2 - size + pad, size*2, size*2);
-    // console.log((x+1)*width/2 - size, (y+1)*height/2 - size, size, size)
+    ctx.fillStyle = style;
 }
 
 function drawBackground(canvas) {

@@ -95,7 +95,7 @@ function detect() {
 
         let canvas = document.getElementById(`axis_${i}`);
         drawBackground(canvas);
-        drawAxis(canvas, gamepad.axes[(i*2)], gamepad.axes[(i*2)+1]);
+        drawAxis(canvas, gamepad.axes[(i*2)], gamepad.axes[(i*2)+1], {color: gamepad.buttons[10+i].pressed ? "red" : "black"});
     }
 
     (() => {
